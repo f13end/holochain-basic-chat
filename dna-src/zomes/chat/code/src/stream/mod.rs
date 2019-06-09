@@ -7,7 +7,6 @@ use hdk::{
 
 use hdk::holochain_core_types::{
     dna::entry_types::Sharing,
-    cas::content::Address,
 };
 
 pub mod handlers;
@@ -24,50 +23,49 @@ pub fn public_stream_definition() -> ValidatingEntryType {
         name: "public_stream",
         description: "A stream of which anyone can become a member and post",
         sharing: Sharing::Public,
-        native_type: Stream,
 
         validation_package: || {
             hdk::ValidationPackageDefinition::Entry
         },
 
-        validation: |_stream: Stream, _ctx: hdk::ValidationData| {
+        validation: |_validation_data: hdk::EntryValidationData<Stream>| {
             Ok(())
         },
 
         links: [
             to!(
                 "%agent_id",
-                tag: "has_member",
+                link_type: "has_member",
 
                 validation_package: || {
                     hdk::ValidationPackageDefinition::Entry
                 },
 
-                validation: |_base: Address, _target: Address, _ctx: hdk::ValidationData| {
+                validation: |_validation_data: hdk::LinkValidationData| {
                     Ok(())
                 }
             ),
             from!(
                 "%agent_id",
-                tag: "member_of",
+                link_type: "member_of",
 
                 validation_package: || {
                     hdk::ValidationPackageDefinition::Entry
                 },
 
-                validation: |_base: Address, _target: Address, _ctx: hdk::ValidationData| {
+                validation: |_validation_data: hdk::LinkValidationData| {
                     Ok(())
                 }
             ),
             to!(
                 "message",
-                tag: "message_in",
+                link_type: "message_in",
 
                 validation_package: || {
                     hdk::ValidationPackageDefinition::Entry
                 },
 
-                validation: |_base: Address, _target: Address, _ctx: hdk::ValidationData| {
+                validation: |_validation_data: hdk::LinkValidationData| {
                     Ok(())
                 }
             )

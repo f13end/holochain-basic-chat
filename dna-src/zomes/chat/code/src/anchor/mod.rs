@@ -2,7 +2,6 @@ use hdk::entry_definition::ValidatingEntryType;
 
 use hdk::holochain_core_types::{
     dna::entry_types::Sharing,
-    cas::content::Address,
     json::RawString,
 };
 
@@ -12,38 +11,37 @@ pub fn anchor_definition() -> ValidatingEntryType {
         name: "anchor",
         description: "",
         sharing: Sharing::Public,
-        native_type: RawString,
 
         validation_package: || {
             hdk::ValidationPackageDefinition::Entry
         },
 
-        validation: |_name: RawString, _ctx: hdk::ValidationData| {
+        validation: |_validation_data: hdk::EntryValidationData<RawString>| {
             Ok(())
         },
 
         links: [
             to!(
                 "%agent_id",
-                tag: "member_tag",
+                link_type: "member_tag",
 
                 validation_package: || {
                     hdk::ValidationPackageDefinition::Entry
                 },
 
-                validation: |_base: Address, _target: Address, _ctx: hdk::ValidationData| {
+                validation: |_validation_data: hdk::LinkValidationData| {
                     Ok(())
                 }
             ),
             to!(
                 "public_stream",
-                tag: "public_stream",
+                link_type: "public_stream",
 
                 validation_package: || {
                     hdk::ValidationPackageDefinition::Entry
                 },
 
-                validation: |_base: Address, _target: Address, _ctx: hdk::ValidationData| {
+                validation: |_validation_data: hdk::LinkValidationData| {
                     Ok(())
                 }
             )
